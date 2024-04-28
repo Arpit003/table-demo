@@ -20,6 +20,7 @@ table {
   background: rgba(0, 0, 0, 0.5);
   opacity: 0.5;
   pointer-events: none;
+  position: relative;
 }
 
 td,

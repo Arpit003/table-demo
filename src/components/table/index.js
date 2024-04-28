@@ -35,7 +35,7 @@ const Table = () => {
           ...options,
           params: {
             ...options.params,
-            offset: currentPage,
+            offset: currentPage * perPage,
             limit: perPage,
             namePrefix: search,
           },
@@ -69,33 +69,44 @@ const Table = () => {
     fetchCountriesData();
   }, [fetchCountriesData]);
 
+  useEffect(() => {
+    document.onkeydown = (e) => {
+      if (e.metaKey && e.keyCode === 191) {
+        document.getElementById("search-box").focus();
+      }
+    };
+  }, []);
+
   return (
     <div className="table-container">
       <input
         className="search-box"
+        id="search-box"
         value={search}
         placeholder="Search places..."
         onChange={(e) => onSearchValue(e?.target?.value)}
       />
-      <table className={isLoading && "loading"}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Place Name</th>
-            <th>Country</th>
-          </tr>
-        </thead>
-        <tbody>
-          {countries?.data?.map((item, index) => (
-            <tr key={item?.id}>
-              <td className="table-index">{index + 1}</td>
-              <td>{item?.name}</td>
-              <td>{item?.country}</td>
+      <div className={isLoading ? "loading" : ""}>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Place Name</th>
+              <th>Country</th>
             </tr>
-          ))}
-          <SpinnerCircular enabled={isLoading} className="spinner" />
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {countries?.data?.map((item, index) => (
+              <tr key={item?.id}>
+                <td className="table-index">{index + 1}</td>
+                <td>{item?.name}</td>
+                <td>{item?.country}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <SpinnerCircular enabled={isLoading} className="spinner" />
+      </div>
 
       {!countries?.data?.length && !isLoading && (
         <div className="no-result">No Result Found</div>
